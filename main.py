@@ -6,7 +6,6 @@ def get_all_employees():
     cur.execute(
         "select * from employees"
     )
-
     for i in cur:
         print(i)
 
@@ -26,41 +25,44 @@ if __name__ == '__main__':
     except mariadb.Error as e:
         print("Error connecting to MariaDB Platform:  {}".format(e))
         sys.exit(1)
-
+    else:
+        print("successfully connected")
     cur = conn.cursor()
-    print("--------------------------------------------------------------")
+    print("--------------------Begin-----------------------------------")
     cur.execute(
         "show tables"
     )
     for i in cur:
-        print(i, end=' ')
+        print(i[0], end=" | ")
     print()
 
-    print("--------------------------------------------------------------")
+    print("-------------------Show Fields-----------------------------")
     cur.execute(
         "show fields from employees"
     )
     for i in cur:
         print(i[0], end=" ")
     print()
+
     get_all_employees()
-    print("--------------------------------------------------------------")
+
+    print("----------------------Job Title-------------------------------")
     cur.execute(
-        "select * from employees where jobTitle = ?",
+        "select firstName, lastName, email from employees where jobTitle = ? order by firstName",
         ("Sales Rep",)
     )
 
     for i in cur:
         print(i)
-    print("--------------------------------------------------------------")
+    print("---------------------------Like---------------------------")
     cur.execute(
-        "select contactLastName, contactFirstName from customers where contactLastName like ?",
+        "select UPPER(contactLastName), UPPER(contactFirstName) from customers where contactLastName like ?",
         ("S%",)
     )
 
     for i in cur:
         print(i)
-    print("--------------------------------------------------------------")
+    print("----------------------Drop table-------------------------------")
     cur.execute(
         "drop table IF EXISTS test"
     )
@@ -75,9 +77,12 @@ if __name__ == '__main__':
     for i in cur:
         print(i)
 
-    print("--------------------------------------------------------------")
+    print("-----------------------insert into------------------------------")
     cur.execute(
         "insert into test (id, age, first, last) values (100, 25, 'jafer', 'alhaboubi')"
+    )
+    cur.execute(
+        "insert into test (id, age, first, last) values (200, 30, 'x', 'z')"
     )
 
     cur.execute(
@@ -86,9 +91,9 @@ if __name__ == '__main__':
 
     for i in cur:
         print(i)
-    print("--------------------------------------------------------------")
-    # cur.execute(
-    #     "delete from test where id = 100"
-    # )
+    print("-----------------------END-----------------------------")
+    cur.execute(
+        "delete from test where id = ?", (100,)
+    )
 
     conn.close()
