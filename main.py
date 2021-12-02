@@ -117,6 +117,7 @@ if __name__ == '__main__':
         print("successfully connected")
     cur = conn.cursor()
 
+    # Call all functions to manipulate MariaDB "classicmodel" database/schema
     begin()
     get_fields()
     get_job_title()
