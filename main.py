@@ -1,3 +1,6 @@
+# Program utilizing the Python to MariaDB connector, forked from https://github.com/jhabboubi/thu_databases
+# Code forked and updated by Maximilian Conroy for the Per Scholas Cloud DevOps program
+
 import mariadb
 import sys
 
