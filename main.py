@@ -1,7 +1,14 @@
-
-# python connection with MariaDB
 import mariadb
 import sys
+
+
+def get_all_employees():
+    cur.execute(
+        "select * from employees"
+    )
+
+    for i in cur:
+        print(i)
 
 
 if __name__ == '__main__':
@@ -16,23 +23,72 @@ if __name__ == '__main__':
 
         )
         conn.autocommit = True
-
     except mariadb.Error as e:
-        print(f"Error connecting to MariaDB Platform: {e}")
+        print("Error connecting to MariaDB Platform:  {}".format(e))
         sys.exit(1)
-    else:
-        print("connection opened!")
-    # Get Cursor
-    cur = conn.cursor()
 
+    cur = conn.cursor()
+    print("--------------------------------------------------------------")
     cur.execute(
-        "select * from customers where country = ? order by contactLastName", ("USA",)
+        "show tables"
+    )
+    for i in cur:
+        print(i, end=' ')
+    print()
+
+    print("--------------------------------------------------------------")
+    cur.execute(
+        "show fields from employees"
+    )
+    for i in cur:
+        print(i[0], end=" ")
+    print()
+    get_all_employees()
+    print("--------------------------------------------------------------")
+    cur.execute(
+        "select * from employees where jobTitle = ?",
+        ("Sales Rep",)
     )
 
     for i in cur:
         print(i)
+    print("--------------------------------------------------------------")
+    cur.execute(
+        "select contactLastName, contactFirstName from customers where contactLastName like ?",
+        ("S%",)
+    )
+
+    for i in cur:
+        print(i)
+    print("--------------------------------------------------------------")
+    cur.execute(
+        "drop table IF EXISTS test"
+    )
+    cur.execute(
+        "create table test("
+        "id INT PRIMARY KEY,age INT, first VARCHAR(30), last VARCHAR(30))"
+    )
+
+    cur.execute(
+        "describe test"
+    )
+    for i in cur:
+        print(i)
+
+    print("--------------------------------------------------------------")
+    cur.execute(
+        "insert into test (id, age, first, last) values (100, 25, 'jafer', 'alhaboubi')"
+    )
+
+    cur.execute(
+        "select * from test"
+    )
+
+    for i in cur:
+        print(i)
+    print("--------------------------------------------------------------")
+    # cur.execute(
+    #     "delete from test where id = 100"
+    # )
 
     conn.close()
-
-
-
